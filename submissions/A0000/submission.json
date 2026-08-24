@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "student_name": "Nguyễn Tấn Hoàng; Trần Thị Hoa Mai; Trần Hoàng Quân; Nguyễn Minh Đức",
+    "student_id": "2A202601198; 2A202601317; 2A202601805; 2A202601946",
+    "group_id": "Nhóm 2A2026",
+    "submitted_at": "2026-08-24T10:00:00+07:00"
+  },
+  "industry": "hr-recruitment",
+  "product_context": {
+    "product_name": "HireFair Screening Assistant",
+    "product_stage": "pilot",
+    "problem_statement": "Our recruiters handle 300-plus applications for a single entry-level posting and usually judge them in arrival order, so strong candidates buried late in the queue get overlooked and two recruiters can reach opposite calls on the same CV because nothing forces them to weigh the same criteria.",
+    "target_users": ["recruiters", "hiring managers"],
+    "value_hypothesis": "If we surface the evidence that matches the posted requirements in one place, we expect the median time from a complete application to a first human review to drop by roughly half, without shrinking the pool of candidates a recruiter actually looks at.",
+    "in_scope": ["surface matched evidence", "recommend review order", "flag missing or inconsistent application data"],
+    "non_goals": ["automatic rejection", "final hiring decision", "personality or emotion inference"],
+    "user_journey_moment": "After application completeness check and before the recruiter builds the shortlist",
+    "target_launch_or_review_date": "2026-10-01",
+    "automation_level": "recommendation",
+    "fallback_experience": "Whenever the assistant is down, returns an error, or gets paused mid-incident, recruiters simply open the plain chronological queue and screen manually with keyword filters, the same process we use today; nothing about hiring depends on the tool being available.",
+    "decision_reversibility": "partially-reversible"
+  },
+  "system_profile": {
+    "purpose": "Rank and surface evidence for entry-level job applications so recruiters review the strongest matches first and document every shortlist decision.",
+    "user_groups": ["recruiters", "hiring managers", "appeal reviewers"],
+    "decision_impact": "Recommendations influence which candidates receive recruiter attention and can shape access to interviews, but the assistant never makes the final hiring or rejection decision.",
+    "data_types": ["resume text", "application answers", "assessment scores", "self-reported demographic attributes for monitoring"],
+    "deployment_context": "A private employer hosts a vendor-supplied screening workflow used remotely by recruiters across multiple offices.",
+    "target_markets": ["Vietnam", "European Union"],
+    "system_boundary": {
+      "model": "LLM-based evidence extractor and deterministic eligibility ranker",
+      "application": "candidate application portal and recruiter review dashboard",
+      "people": ["applicants", "recruiters", "hiring managers", "appeal reviewer", "compliance officer"],
+      "vendors": ["screening platform provider", "LLM API provider"],
+      "upstream_inputs": ["job descriptions", "candidate applications", "historical selection data", "eligibility rules"],
+      "downstream_decisions": ["advance to interview", "request additional human review", "reject"]
+    }
+  },
+  "industry_risk_snapshot": {
+    "harm_severity": 4,
+    "high_stakes": 4,
+    "sensitive_data": 4,
+    "affected_scale": 4,
+    "human_review_need": 5,
+    "rationale": "A wrong screening call costs a person their shot at a job and the company a possibly strong hire, and the stakes feel higher because the mistake is easy to make quietly. We hold sensitive personal data, the pool is large enough that even small bias compounds, and because errors are hard for applicants to spot, we need humans to review and someone accountable when things go wrong."
+  },
+  "legal_classification": {
+    "vietnam": {
+      "status": "uncertain-requires-legal-review",
+      "rationale": "We cannot yet say with confidence how our exact screening workflow maps to the AI Law, its implementing decree, and the high-risk AI list. Until a lawyer signs a classification memo that traces our pipeline to the actual texts, we treat the status as unresolved and keep it a release blocker.",
+      "source_ids": ["SRC-06", "SRC-07"]
+    },
+    "eu": {
+      "status": "high-risk",
+      "rationale": "Employment screening sits squarely in the AI Act's Annex III high-risk category, but which obligations bite us, and when, depends on whether we count as provider or deployer and on the current staged timeline. That needs a fresh legal read before we offer the tool in the EU.",
+      "source_ids": ["SRC-05"]
+    },
+    "other_markets": "Any future US rollout would need separate counsel review under Title VII adverse-impact doctrine, which we have not begun.",
+    "legal_review_required": true
+  },
+  "product_metrics": {
+    "success_kpi": "Median time from a complete application to a first qualified recruiter review drops to two business days or fewer, measured weekly per posting.",
+    "risk_kri": "The gap in qualified-candidate recall between monitored demographic groups stays at or below five percentage points, computed monthly.",
+    "guardrail_metric": "The count of automatic rejections stays at exactly zero in every reporting period; no candidate is ever removed without a named human reviewer.",
+    "review_cadence": "We review fairness and incidents monthly, and additionally before any change to job criteria, training data, vendor, model, or target market."
+  },
+  "release_decision": {
+    "accountable_product_owner": "Talent Product Owner",
+    "risk_acceptance_owner": "Head of Talent Acquisition",
+    "independent_reviewer": "Responsible AI Review Board",
+    "decision": "conditional-go",
+    "release_blockers": ["GAP-01: Vietnam classification memo not yet signed", "GAP-02: EU AI Act compliance evidence not yet independently verified", "GAP-03: independent fairness audit not yet completed"],
+    "release_conditions": ["zero automatic rejection paths", "signed fairness audit within tolerance", "named on-call escalation owner"],
+    "next_review_trigger": "We re-review on any threshold breach, incident, vendor or model change, new target market, or on 2026-10-31, whichever comes first.",
+    "residual_risk_rationale": "Even with these controls we accept that a recommendation can still steer attention away from a qualified candidate. We keep the tool advisory only, disable automatic rejection, give applicants an appeal path, and halt deployment if the disparity or override thresholds are crossed."
+  }
+}
